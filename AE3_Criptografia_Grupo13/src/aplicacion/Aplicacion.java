@@ -6,6 +6,7 @@ import java.util.Scanner;
 
 import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
+
 import javax.crypto.SecretKey;
 
 
@@ -17,31 +18,47 @@ public class Aplicacion {
 		
 		
 		System.out.println(" --- Sistema de encriptacion --- ");
+		try {
 		
+		KeyGenerator generador = KeyGenerator.getInstance("AES");
+		System.out.println("Paso 1: Se ha obtenido el generador de claves");
 		
+		SecretKey paloEspartano = generador.generateKey();
+		System.out.println("Paso 2: Se ha obtenido la clave");
+
+		Cipher cifrador = Cipher.getInstance("AES");
+		System.out.println("Paso 3: Hemos obtenido el descifrador");
 		
-		try (Scanner sc0 = new Scanner(System.in)) { //Este Scanner lo usaremos para la variable opcion
+			
+			
+		
+			
+			
+			
 			boolean continuar = true;
 			
-			String mensajeOriginal;
-	        String mensajeEncriptado;
+			byte[] bytesMensajeOriginal;
+			byte[] bytesMensajeCifrado =null;
 			
+			String mensajeOriginal;
+			String mensajeCifrado ;
+			
+			
+			 
 			do {
+				
+				
+				
+				Scanner sc0 = new Scanner(System.in);
+			
 				
 				int opcion = 0;
 				System.out.println("¿Que desea hacer?: \n 0. Salir \n "
 						+ "1. Encriptar frase \n " 
 						+ "2. Desencriptar frase \n ");
 				opcion = sc0.nextInt();
-				
-			      KeyGenerator generador = KeyGenerator.getInstance("AES"); //Generador de claves
-			      SecretKey paloEspartano = generador.generateKey(); // Clave simétrica
-			      Cipher cifrador = Cipher.getInstance("AES"); //Objeto para encriptar y desencriptar
-			      cifrador.init(Cipher.ENCRYPT_MODE, paloEspartano); //El cifrador encriptará
-			      Cipher descifrador = Cipher.getInstance("AES");
-			      descifrador.init(Cipher.DECRYPT_MODE, paloEspartano);
-			     
-                 
+					
+	
 			      
 				switch(opcion) {
 				
@@ -52,44 +69,77 @@ public class Aplicacion {
 					break;
 					
 				case 1:	
-			
-			      Scanner sc1 = new Scanner (System.in);
-	
-			
-			      System.out.println("Introduzca la frase que desea encriptar");		
-			
-			      mensajeOriginal = sc1.nextLine();
-			      byte[] bytesMensajeOriginal = mensajeOriginal.getBytes(); //Convertimos a bytes 1de2
-			      byte[] bytesMensajeCifrado = cifrador.doFinal(bytesMensajeOriginal); //Convertimos a bytes 2de2
-			      String mensajeCifrado = new String(bytesMensajeCifrado);
-			     
-			      
-			      System.out.println("Mensaje Cifrado: " + mensajeCifrado);
-			      System.out.println("Mensaje Original: " + mensajeOriginal);
-			      break;
+					
+					System.out.println("Probando sistema de encriptaci�n con algoritmo AES");
+					
+					try {
+						
+						
+						
+						//Ahora el cifrador lo configuramos para que use la clave simetrica
+						//para encriptar
+						cifrador.init(Cipher.ENCRYPT_MODE, paloEspartano);
+						System.out.println("Paso 4: Hemos configurado el cifrador");
+						
+						System.out.println("Inserte frase a codificar: ");
+								sc0.nextLine();
+						mensajeOriginal = sc0.nextLine();
+						//El cifrador trabaja con bytes, lo convertimos
+						bytesMensajeOriginal = mensajeOriginal.getBytes();
+						System.out.println("Paso 5.1: Ciframos el mensaje original");
+						//El cifrador devuelve una cadena de bytes
+						bytesMensajeCifrado = cifrador.doFinal(bytesMensajeOriginal);
+						mensajeCifrado = new String(bytesMensajeCifrado);
+						System.out.println("Paso 5.2: Mensaje Original: " + mensajeOriginal);
+						System.out.println("Paso 5.3: Mensaje Cifrado: " + mensajeCifrado);
+						
+						
+					//Simplificamos las excepciones capturando GeneralSecurityException
+					} catch (GeneralSecurityException gse) {
+						System.out.println("Algo ha fallado.." + gse.getMessage());
+						gse.printStackTrace();
+					}
+					break;
 			
 				case 2:
-			    
-                  
+				try {
 					
-
+					System.out.println("Paso 6.1: Desciframos el criptograma:");
+					//Ahora el cifrador lo configuramos para que use la clave simetrica
+					//para desencriptar. Debemos de usar la MISMA clave para descifrar, NO
+					//PODEMOS usar/generar una diferente.
+					cifrador.init(Cipher.DECRYPT_MODE, paloEspartano);
+					byte[] bytesMensajeDescifrado = cifrador.doFinal(bytesMensajeCifrado);
+					System.out.println("Paso 6.2: Mensaje Descifrado: " + new String(bytesMensajeDescifrado));
+			
+				}catch (GeneralSecurityException gse) {
+					System.out.println("Algo ha fallado.." + gse.getMessage());
+					gse.printStackTrace();
 				}
+					
+				break;
 				
 				
+				}	
 				
 			}while (continuar);
 				
-		//Simplificamos las excepciones capturando GeneralSecurityException
-		} catch (GeneralSecurityException gse) {
-			System.out.println("Algo ha fallado.." + gse.getMessage());
-			gse.printStackTrace();
-		}
+			
+	
+		
+	} catch (Exception gse) {
+		System.out.println("Algo ha fallado.." + gse.getMessage());
+		gse.printStackTrace();
+	}
+	}
+	
+}
 		
 
-		}
+		
 	
 
-	}
+	
 	
 
 
