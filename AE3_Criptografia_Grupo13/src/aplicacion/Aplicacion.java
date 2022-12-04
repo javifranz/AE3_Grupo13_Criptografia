@@ -72,7 +72,7 @@ public class Aplicacion {
 		String passHash64 = Base64.getEncoder().encodeToString(hashed);
 		
 		
-		System.out.println(passHash64);
+
 		
 		for (int i=0; i<usuarios.size(); i++) {
 			
@@ -98,7 +98,7 @@ public class Aplicacion {
 					System.out.println("Paso 2: Se ha obtenido la clave");
 
 					Cipher cifrador = Cipher.getInstance("AES");
-					System.out.println("Paso 3: Hemos obtenido el descifrador");
+					System.out.println("Paso 3: Hemos obtenido el cifrador");
 					
 						
 						
